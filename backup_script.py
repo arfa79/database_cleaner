@@ -1,7 +1,7 @@
 import os
+import csv
 import mysql.connector
 from datetime import datetime, timedelta
-import csv
 
 db_host = os.getenv('DB_HOST', 'localhost')
 db_user = os.getenv('DB_USER', 'root')

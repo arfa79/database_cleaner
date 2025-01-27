@@ -1,0 +1,39 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0
+    container_name: my_database
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - my_network
+
+  backup:
+    build: .
+    container_name: backup_service
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: mydatabase
+      N_DAYS: 7
+      BACKUP_DIR: /backup
+    volumes:
+      - ./backup:/backup
+    networks:
+      - my_network
+    depends_on:
+      - db
+    restart: always
+    entrypoint: ["sh", "-c", "while true; do python backup_script.py; sleep 86400; done"]
+
+volumes:
+  db_data:
+
+networks:
+  my_network:
